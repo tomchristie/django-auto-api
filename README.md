@@ -55,7 +55,12 @@ This runs an example API for a few models of `contrib.contenttypes` and `contrib
 Changelog
 =========
 
-0.1.0
+1.0.1
+-----
+
+* Fix description in setup.py
+
+1.0.0
 -----
 
 * Initial release
