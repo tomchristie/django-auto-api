@@ -1,7 +1,7 @@
 from django.db.models import get_model, get_models
 from django.http import HttpResponse
 from django.core.urlresolvers import reverse as _reverse
-from serializers import Serializer, ModelSerializer, RelatedField
+from serializers import Serializer, ModelSerializer, Field, RelatedField
 
 
 mime_types = {
@@ -13,24 +13,6 @@ mime_types = {
 }
 
 
-class URLRelatedField(RelatedField):
-    def convert(self, obj):
-        app_name = obj._meta.app_label
-        model_name = obj._meta.object_name.lower()
-        kwargs = {'app_name': app_name, 'model': model_name, 'pk': obj.pk}
-        request = self.root.kwargs['request']
-        format = self.root.kwargs['format']
-        return reverse('autoapi:instance', kwargs=kwargs,
-                       request=request, format=format)
-
-
-class APISerializer(ModelSerializer):
-    class Meta:
-        model_field_types = ('fields', 'many_to_many')
-        depth = 0
-        related_field = URLRelatedField
-
-
 def reverse(viewname, kwargs=None, request=None, format=None):
     """
     Like the regular 'reverse' function, but returns fully qualified urls,
@@ -40,6 +22,19 @@ def reverse(viewname, kwargs=None, request=None, format=None):
         kwargs['format'] = format
     url = _reverse(viewname, kwargs=kwargs)
     return request.build_absolute_uri(url)
+
+
+def url_for_object(obj, request, format):
+    """
+    Return the canonical URL for a given model instance.
+    Use the request to form an absolute URL, rather than a relative one,
+    and use a format suffix (eg '.json') if one is provided.
+    """
+    app_name = obj._meta.app_label
+    model_name = obj._meta.object_name.lower()
+    kwargs = {'app_name': app_name, 'model': model_name, 'pk': obj.pk}
+    return reverse('autoapi:instance', kwargs=kwargs,
+                   request=request, format=format)
 
 
 def get_api_root(request, format):
@@ -55,6 +50,30 @@ def get_api_root(request, format):
                       request=request, format=format)
         ret[app_name + '.' + model_name] = url
     return ret
+
+
+class URLField(Field):
+    def convert_field(self, obj, field_name):
+        request = self.root.kwargs['request']
+        format = self.root.kwargs['format']
+        return url_for_object(obj, request, format)
+
+
+class URLRelatedField(RelatedField):
+    def convert(self, obj):
+        request = self.root.kwargs['request']
+        format = self.root.kwargs['format']
+        return url_for_object(obj, request, format)
+
+
+class APISerializer(ModelSerializer):
+    url = URLField()
+
+    class Meta:
+        include_default_fields = True
+        model_field_types = ('fields', 'many_to_many')
+        depth = 0
+        related_field = URLRelatedField
 
 
 def root(request, format=None):
