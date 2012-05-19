@@ -32,15 +32,15 @@ Add the `django-auto-api` urls to your URLConf:
 
 In `HTML` format:
 
-<img src="screenshots/html.png"/>
+![HTML API](screenshots/html.png)
 
 In `JSON` format:
 
-<img src="screenshots/json.png"/>
+![JSON API](screenshots/json.png)
 
 In `XML` format:
 
-<img src="screenshots/xml.png"/>
+![XML API](screenshots/xml.png)
 
 ## Running the example project
 
