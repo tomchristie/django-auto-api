@@ -1,7 +1,7 @@
 from django.db.models import get_model, get_models
 from django.http import HttpResponse
 from django.core.urlresolvers import reverse as _reverse
-from serializers import Serializer, ModelSerializer, Field, RelatedField
+from serializers import ObjectSerializer, ModelSerializer, Field, RelatedField
 
 
 mime_types = {
@@ -79,7 +79,7 @@ class APISerializer(ModelSerializer):
 def root(request, format=None):
     root = get_api_root(request, format)
     format = format or 'html'
-    content = Serializer().serialize(root, format)
+    content = ObjectSerializer().serialize(root, format)
     return HttpResponse(content, mime_types[format])
 
 
