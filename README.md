@@ -55,6 +55,11 @@ This runs an example API for a few models of `contrib.contenttypes` and `contrib
 Changelog
 =========
 
+1.0.2
+-----
+
+* Fix homepage link in setup.py
+
 1.0.1
 -----
 

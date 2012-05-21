@@ -10,7 +10,7 @@ import sys
 name = 'django-auto-api'
 package = 'autoapi'
 description = 'Web APIs for Django, with one line of code.'
-url = 'http://github.com/tomchristie/autoapi/'
+url = 'http://github.com/tomchristie/django-auto-api/'
 author = 'Tom Christie'
 author_email = 'tom@tomchristie.com'
 license = 'BSD'
