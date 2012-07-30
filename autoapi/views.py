@@ -1,7 +1,7 @@
 from django.db.models import get_model, get_models
 from django.http import HttpResponse
 from django.core.urlresolvers import reverse as _reverse
-from serializers import ObjectSerializer, ModelSerializer, Field, RelatedField
+from serializers import ModelSerializer, Field, RelatedField
 
 
 mime_types = {
@@ -53,16 +53,16 @@ def get_api_root(request, format):
 
 
 class URLField(Field):
-    def convert_field(self, obj, field_name):
-        request = self.root.kwargs['request']
-        format = self.root.kwargs['format']
+    def field_to_native(self, obj, field_name):
+        request = self.context['request']
+        format = self.context['format']
         return url_for_object(obj, request, format)
 
 
 class URLRelatedField(RelatedField):
-    def convert(self, obj):
-        request = self.root.kwargs['request']
-        format = self.root.kwargs['format']
+    def to_native(self, obj):
+        request = self.context['request']
+        format = self.context['format']
         return url_for_object(obj, request, format)
 
 
@@ -70,30 +70,30 @@ class APISerializer(ModelSerializer):
     url = URLField()
 
     class Meta:
-        include_default_fields = True
-        model_field_types = ('fields', 'many_to_many')
-        depth = 0
-        related_field = URLRelatedField
+        exclude = ('id',)
+
+    def get_related_field(self, model_field):
+        return URLRelatedField()
 
 
 def root(request, format=None):
     root = get_api_root(request, format)
     format = format or 'html'
-    content = ObjectSerializer().serialize(root, format)
+    content = APISerializer().serialize(format, root)
     return HttpResponse(content, mime_types[format])
 
 
 def list(request, app_name, model, format=None):
-    serializer = APISerializer(request=request, format=format)
     queryset = get_model(app_name, model)._default_manager.all()
+    context = {'request': request, 'format': format}
     format = format or 'html'
-    content = serializer.serialize(queryset, format)
+    content = APISerializer().serialize(format, queryset, context)
     return HttpResponse(content, mime_types[format])
 
 
 def instance(request, app_name, model, pk, format=None):
-    serializer = APISerializer(request=request, format=format)
     instance = get_model(app_name, model)._default_manager.get(pk=pk)
+    context = {'request': request, 'format': format}
     format = format or 'html'
-    content = serializer.serialize(instance, format)
+    content = APISerializer().serialize(format, instance, context)
     return HttpResponse(content, mime_types[format])
