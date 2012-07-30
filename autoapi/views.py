@@ -70,7 +70,7 @@ class APISerializer(ModelSerializer):
     url = URLField()
 
     class Meta:
-        exclude = ('id',)
+        exclude = ('pk', 'id', 'password')
 
     def get_related_field(self, model_field):
         return URLRelatedField()
