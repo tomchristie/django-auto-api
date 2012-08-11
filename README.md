@@ -55,6 +55,11 @@ This runs an example API for a few models of `contrib.contenttypes` and `contrib
 Changelog
 =========
 
+1.1.0
+-----
+
+* Updated for django-serializers 0.6
+
 1.0.2
 -----
 
