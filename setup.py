@@ -14,7 +14,7 @@ url = 'http://github.com/tomchristie/django-auto-api/'
 author = 'Tom Christie'
 author_email = 'tom@tomchristie.com'
 license = 'BSD'
-install_requires = ['django-serializers']
+install_requires = ['django-serializers==0.6.0']
 
 
 def get_version(package):

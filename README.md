@@ -55,6 +55,11 @@ This runs an example API for a few models of `contrib.contenttypes` and `contrib
 Changelog
 =========
 
+1.1.1
+-----
+
+* Pin `install_requires` to django-serializers version 0.6.0
+
 1.1.0
 -----
 
