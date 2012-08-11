@@ -1,1 +1,2 @@
-django>=1.3
+django==1.4
+django-serializers==0.6.0
