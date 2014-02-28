@@ -1,3 +1,5 @@
+**NO LONGER MAINTAINED**
+
 # Django Auto API
 
 **Web APIs for Django, with one line of code.**
